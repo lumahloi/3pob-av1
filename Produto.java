@@ -76,169 +76,236 @@ public class Produto {
 		Produto p = new Produto();
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.println("Insira o ID: ");
-		p.setId(sc.nextInt());
-		sc.nextLine();
+		Produto.IncluirId(listaProds, p, sc);
 		
-		System.out.println("Insira o Código de Barras: ");
-		p.setCodigoDeBarra(sc.nextLine());
+		Produto.IncluirCodigoDeBarras(p, sc);
 		
-		System.out.println("Insira o SKU: ");
-		p.setSku(sc.nextLine());
+		Produto.IncluirSku(p, sc);
 		
-		System.out.println("Insira o Nome: ");
-		p.setNome(sc.nextLine());
+		Produto.IncluirNome(p, sc);
 		
-		System.out.println("Insira a Descrição: ");
-		p.setDescricao(sc.nextLine());
+		Produto.IncluirDescrição(p, sc);
 		
-		System.out.println("Insira a Categoria: ");
-		p.setCategoria(sc.nextLine());
+		Produto.IncluirCategoria(p, sc);
 		
-		System.out.println("Insira o Preço: ");
-		p.setPreço(sc.nextDouble());
-		sc.nextLine();
+		Produto.IncluirPreço(p, sc);
 		
-		System.out.println("Insira o Peso: ");
-		p.setPeso(sc.nextDouble());
-		sc.nextLine();
+		Produto.IncluirPeso(p, sc);
 		
-		System.out.println("Insira o Fabricante: ");
-		p.setFabricante(sc.nextLine());
+		Produto.IncluirFabricante(p, sc);
 		
 		listaProds.add(p);
 	}
 	
-	public static void Alterar(ArrayList<Produto> listaProds, int prodId) {
-		Scanner sc = new Scanner(System.in);
-		int achou = 0, opcao = 0;
+		private static void IncluirId(ArrayList<Produto> listaProds, Produto p, Scanner sc) {
+			while(true) {
+			    System.out.println("Insira o ID: ");
+			    if(sc.hasNextInt()) {
+			        int num = sc.nextInt();
+			        sc.nextLine(); // consume the newline
+			        if(Produto.ProcurarProd(listaProds, num) == null) {
+			            p.setId(num);
+			            break;
+			        }
+			        else {
+			            System.out.println("Insira outro Id, esse já existe no sistema.");
+			        }
+			    } else {
+			        System.out.println("Insira um número.");
+			        if(sc.hasNext()) {
+			            sc.next();
+			        }
+			    }
+			}
+		}
+
+		private static void IncluirCodigoDeBarras(Produto p, Scanner sc) {
+			System.out.println("Insira o Código de Barras: ");
+			p.setCodigoDeBarra(sc.nextLine());
+		}
 		
-		for(Produto p : listaProds) {
-			if(p.getId() == prodId) {
-				achou = 1;
-				while(opcao != 9) {
-					System.out.println("O que voce deseja alterar?\n"
-							+ "[1] Codigo de barras\n"
-							+ "[2] SKU\n"
-							+ "[3] Nome\n"
-							+ "[4] Descrição\n"
-							+ "[5] Categoria\n"
-							+ "[6] Preço\n"
-							+ "[7] Peso\n"
-							+ "[8] Fabricante\n"
-							+ "[9] Sair");
-					opcao = sc.nextInt();
+		private static void IncluirSku(Produto p, Scanner sc) {
+			System.out.println("Insira o Sku: ");
+			p.setSku(sc.nextLine());
+		}
+		
+		private static void IncluirNome(Produto p, Scanner sc) {
+			System.out.println("Insira o Nome: ");
+			p.setNome(sc.nextLine());
+		}
+	
+		private static void IncluirDescrição(Produto p, Scanner sc) {
+			System.out.println("Insira a Descrição: ");
+			p.setDescricao(sc.nextLine());
+		}
+		
+		private static void IncluirCategoria(Produto p, Scanner sc) {
+			System.out.println("Insira a Categoria: ");
+			p.setCategoria(sc.nextLine());
+		}
+		
+		private static void IncluirPreço(Produto p, Scanner sc) {
+			while(true) {
+			    System.out.println("Insira o Preço: ");
+			    if(sc.hasNextDouble()) {
+			        double num = sc.nextDouble();
+			        sc.nextLine(); // consume the newline
+			        p.setPreço(num);
+			        break;
+			        
+			    } else {
+			        System.out.println("Insira um preço no formato X,XX.");
+			        sc.next();
+			    }
+			}
+		}
+		
+		private static void IncluirPeso(Produto p, Scanner sc) {
+			while(true) {
+			    System.out.println("Insira o Peso: ");
+			    if(sc.hasNextDouble()) {
+			        double num = sc.nextDouble();
+			        sc.nextLine(); // consume the newline
+			        p.setPeso(num);
+			        break;
+			        
+			    } else {
+			        System.out.println("Insira um peso no formato XX,XX.");
+			        sc.next();
+			    }
+			}
+		}
+		
+		private static void IncluirFabricante(Produto p, Scanner sc) {
+			System.out.println("Insira o Fabricante: ");
+			p.setFabricante(sc.nextLine());
+	}
+	
+	public static void Alterar(ArrayList<Produto> listaProds, int prodId) {
+		try (Scanner sc = new Scanner(System.in)) {
+			int opcao;
+			
+			Produto p = Produto.ProcurarProd(listaProds, prodId);
+			if(p != null) {
+				do {
+					opcao = AlterarMenu(sc);
 					sc.nextLine();
 					
 					switch(opcao) {
 						case 1:
-							System.out.println("\nDigite o novo código de barras: ");
-							p.setCodigoDeBarra(sc.nextLine());
+							Produto.IncluirId(listaProds, p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 2:
-							System.out.println("\nDigite o novo SKU: ");
-							p.setSku(sc.nextLine());
+							Produto.IncluirCodigoDeBarras(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 3:
-							System.out.println("\nDigite o novo nome: ");
-							p.setNome(sc.nextLine());
+							Produto.IncluirSku(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 4:
-							System.out.println("\nDigite a nova descrição: ");
-							p.setDescricao(sc.nextLine());
+							Produto.IncluirNome(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 5:
-							System.out.println("\nDigite a nova categoria: ");
-							p.setCategoria(sc.nextLine());
+							Produto.IncluirDescrição(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 6:
-							System.out.println("\nDigite o novo preço: ");
-							p.setPreço(sc.nextDouble());
+							Produto.IncluirCategoria(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 7:
-							System.out.println("\nDigite o novo peso: ");
-							p.setPeso(sc.nextDouble());
+							Produto.IncluirPreço(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 8:
-							System.out.println("\nDigite o novo fabricante: ");
-							p.setFabricante(sc.nextLine());
+							Produto.IncluirPeso(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
 							break;
 						case 9:
-							return;
+							Produto.IncluirFabricante(p, sc);
+							System.out.println("[SUCESSO] Produto alterado!");
+							break;
+						case 10:
+							Main.menu(sc);
 						default:
-							System.out.println("Selecione uma opção válida.");
+							System.out.println("[ERRO] Selecione uma opção válida.");
 					}
-				}
+				} while (opcao != 10);
+			} else {
+				System.out.println("[ERRO] Não foi possível encontrar um produto com esse Id.");
 			}
-		}
-		
-		if (achou == 0) {
-			System.out.println("Não foi possível encontrar um produto com esse Id.");
 		}
 	}
 	
+		private static int AlterarMenu(Scanner sc) {
+			System.out.println("\n\n\nO que voce deseja alterar?\n"
+			+ "[1] Id\n"
+			+ "[2] Codigo de barras\n"
+			+ "[3] SKU\n"
+			+ "[4] Nome\n"
+			+ "[5] Descrição\n"
+			+ "[6] Categoria\n"
+			+ "[7] Preço\n"
+			+ "[8] Peso\n"
+			+ "[9] Fabricante\n"
+			+ "[10] Sair");
+			
+			return sc.nextInt();
+	}
+	
 	public static void Excluir(ArrayList<Produto> listaProds, int prodId) {
-		Scanner sc = new Scanner(System.in);
-		int achou = 0, index = 0;
+		Produto p = Produto.ProcurarProd(listaProds, prodId);
 		
-		for(Produto p : listaProds) {
-			if(p.getId() == prodId) {
-				achou = 1;
-				index = listaProds.indexOf(p);
-				break;
-			}
-		}
-		
-		if (achou == 0) {
-			System.out.println("Não foi possível encontrar um produto com esse Id.");
+		if (p == null) {
+			System.out.println("[ERRO] Não foi possível encontrar um produto com esse Id.");
 		} else {
-			listaProds.remove(index);
+			listaProds.remove(p);
+			System.out.println("[SUCESSO] Produto removido!");
 		}
+		
 	}
 
 	public static void ListarTodos(ArrayList<Produto> listaProds) {
 		int i = 1;
 		for (Produto p : listaProds) {
 			System.out.println("Produto " + i);
-			System.out.println("Id : " + p.getId());
-			System.out.println("Código de barras : " + p.getCodigoDeBarra());
-			System.out.println("SKU : " + p.getSku());
-			System.out.println("Nome : " + p.getNome());
-			System.out.println("Descrição : " + p.getDescricao());
-			System.out.println("Categoria : " + p.getCategoria());
-			System.out.println("Preço : " + p.getPreço());
-			System.out.println("Peso : " + p.getPeso());
-			System.out.println("Fabricante : " + p.getFabricante());
-			System.out.println("\n");
+			Produto.ExibirProduto(p);
+			i++;
 		}
 	}
 
 	public static void ListarUm(ArrayList<Produto> listaProds, int prodId) {
-		Scanner sc = new Scanner(System.in);
-		int achou = 0;
-		Produto escolhido = new Produto();
+		Produto p = ProcurarProd(listaProds, prodId);
 		
-		for(Produto p : listaProds) {
-			if(p.getId() == prodId) {
-				achou = 1;
-				escolhido = p;
-				break;
-			}
-		}
-		
-		if (achou == 0) {
+		if (p == null) {
 			System.out.println("Não foi possível encontrar um produto com esse Id.");
 		} else {
-			System.out.println("Id : " + escolhido.getId());
-			System.out.println("Código de barras : " + escolhido.getCodigoDeBarra());
-			System.out.println("SKU : " + escolhido.getSku());
-			System.out.println("Nome : " + escolhido.getNome());
-			System.out.println("Descrição : " + escolhido.getDescricao());
-			System.out.println("Categoria : " + escolhido.getCategoria());
-			System.out.println("Preço : " + escolhido.getPreço());
-			System.out.println("Peso : " + escolhido.getPeso());
-			System.out.println("Fabricante : " + escolhido.getFabricante());
-			System.out.println("\n");
+			Produto.ExibirProduto(p);
 		}
+	}
+
+		private static Produto ProcurarProd(ArrayList<Produto> listaProds, int prodId) {
+			for(Produto p : listaProds) {
+				if(p.getId() == prodId) {
+					return p;
+				}
+			}
+			return null;
+		}
+		
+		private static void ExibirProduto(Produto p) {
+		System.out.println("Id : " + p.getId());
+		System.out.println("Código de barras : " + p.getCodigoDeBarra());
+		System.out.println("SKU : " + p.getSku());
+		System.out.println("Nome : " + p.getNome());
+		System.out.println("Descrição : " + p.getDescricao());
+		System.out.println("Categoria : " + p.getCategoria());
+		System.out.println("Preço : " + p.getPreço());
+		System.out.println("Peso : " + p.getPeso());
+		System.out.println("Fabricante : " + p.getFabricante());
+		System.out.println("\n");
 	}
 }
